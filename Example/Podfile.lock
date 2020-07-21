@@ -1,0 +1,24 @@
+PODS:
+  - Alamofire (5.2.1)
+  - CKLNetworkLibrary (0.0.4):
+    - Alamofire (~> 5.2.1)
+
+DEPENDENCIES:
+  - Alamofire (~> 5.2.1)
+  - CKLNetworkLibrary (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs:
+    - Alamofire
+
+EXTERNAL SOURCES:
+  CKLNetworkLibrary:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Alamofire: e911732990610fe89af59ac0077f923d72dc3dfd
+  CKLNetworkLibrary: d92897b6105ec229a7729667497ed5615493207d
+
+PODFILE CHECKSUM: e871c193f0b25a304a3975bc656a7a53cf5a55b5
+
+COCOAPODS: 1.9.3
