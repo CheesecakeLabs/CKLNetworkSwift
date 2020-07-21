@@ -15,18 +15,24 @@ public protocol CKLRequestable: URLRequestConvertible {
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var path: String { get }
-    
+    var nameKeyAuthorization: String { get }
+    var tokenAuthorization: String { get }
     func asURLRequest() throws -> URLRequest
     func getDecoder() -> JSONDecoder
 }
 
 extension CKLRequestable {
     
-    /// returns the token when authorizing requests
-    public  var authorization: String? {
-        return tokenAuthApp
+    /// returns the name of field authorizing requests
+    public var nameKeyAuthorization: String {
+        keyNameAuthorization
     }
     
+    /// returns the token when authorizing requests
+    public var tokenAuthorization: String {
+        valueTokenAuthorization
+    }
+     
     /// Check if url with parameters is a valid url
     /// - Throws: Error encoding failed
     /// - Returns: Url Request with parameters
@@ -40,9 +46,8 @@ extension CKLRequestable {
         urlRequest.httpMethod = method.rawValue
         
         urlRequest.setValue(ContentType.json.rawValue, forHTTPHeaderField: HTTPHeaderField.contentType.rawValue)
-        if let authorization = authorization {
-            urlRequest.setValue(authorization, forHTTPHeaderField: HTTPHeaderField.authentication.rawValue)
-        }
+       
+        urlRequest.setValue(tokenAuthorization, forHTTPHeaderField: nameKeyAuthorization)
         
         if let parameters = parameters {
             do {

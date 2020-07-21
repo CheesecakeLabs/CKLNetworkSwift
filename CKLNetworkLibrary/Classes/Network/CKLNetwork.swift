@@ -21,7 +21,6 @@ public enum Response<T> {
 }
 
 public enum HTTPHeaderField: String {
-    case authentication = "Authorization"
     case contentType = "Content-Type"
 }
 
@@ -42,7 +41,6 @@ public class CKLNetwork<R: CKLRequestable> {
     // MARK: - Custom methods
     
     public init() {}
-
     
     /// make request
     /// - Parameters:
