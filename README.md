@@ -16,10 +16,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 CKLNetworkLibrary is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
-check: do the installation as a private repository
-
 ```ruby
-pod 'CKLNetwork'
+pod 'CKLNetwork' :git => 'https://github.com/CheesecakeLabs/CKLNetworkSwift.git'
 ```
 
 ## Author
