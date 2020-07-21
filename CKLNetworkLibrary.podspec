@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'CKLNetwork'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'Wrapping library to maintain standard requests. Design patter MVVM'
  
 
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/CheesecakeLabs/CKLNetworkSwift' 
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'cherobin' => 'ricardo@cherobin.com.br' }
-  s.source           = { :git => 'https://github.com/CheesecakeLabs/CKLNetworkSwift.git', :tag => '0.0.1' }
+  s.source           = { :git => 'https://github.com/CheesecakeLabs/CKLNetworkSwift.git', :tag => '0.0.2' }
   s.social_media_url = 'https://twitter.com/RicCherobin'
 
   s.ios.deployment_target = '12.0'
