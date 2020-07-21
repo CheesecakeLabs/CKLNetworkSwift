@@ -15,6 +15,11 @@ enum ExempleResources {
 }
 
 extension ExempleResources: CKLRequestable {
+    
+    var baseURL: String {
+          var config = Config()
+          return config.baseURL
+    }
  
     var method: HTTPMethod {
         switch self {
