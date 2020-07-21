@@ -16,6 +16,17 @@ enum ExempleResources {
 
 extension ExempleResources: CKLRequestable {
     
+    /// if you need to change the authorization, uncomment.
+    /// Default key authorization  is  `Authorization`, you can change using setKeyNameAuthorization, and `Token` is provide in setToken
+   /* var nameKeyAuthorization: String {
+        "X-CMC_PRO_API_KEY"
+    }
+   
+    var tokenAuthorization: String {
+        "token"
+    }
+    */
+    
     var baseURL: String {
           var config = Config()
           return config.baseURL

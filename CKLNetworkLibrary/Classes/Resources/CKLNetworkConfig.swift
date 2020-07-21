@@ -12,7 +12,10 @@ import UIKit
 // MARK: - Attributes
 
 /// server-supplied token string
-var tokenAuthApp: String = ""
+var valueTokenAuthorization: String = ""
+
+/// default key authorization  is  `Authorization`
+var keyNameAuthorization: String = "Authorization"
 
 /// Name to associate with the `Data` in the `Content-Disposition` HTTP header.
 var nameMediaType: String = "midia"
@@ -46,7 +49,12 @@ public struct CKLNetworkConfig {
     /// Set Token to authentication
     /// - Parameter token: server-supplied token string
     public func setToken(token: String) {
-        tokenAuthApp = token
+        valueTokenAuthorization = token
+    }
+    
+    /// set default key authorization
+    public func setKeyNameAuthorization(keyName: String) {
+        keyNameAuthorization = keyName
     }
     
     /// Set default description to generic error
