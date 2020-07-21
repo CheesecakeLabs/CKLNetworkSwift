@@ -151,11 +151,13 @@ private func printRequest(request: CKLRequestable?) {
         return
     }
     
+    #if DEBUG
     print("\n\n**********  REQUEST   **************")
     print("\(request?.urlRequest?.httpMethod ?? "") - URL: ", request?.urlRequest?.url ?? "")
     print("HEADER: ", request?.urlRequest?.allHTTPHeaderFields?.CKLToJson() ?? "")
     print("BODY: ", request?.parameters ?? "")
     print("****************************************\n\n")
+    #endif
 }
 
 private func printResponse<T: Decodable>(_ response: DataResponse<T, AFError>) {
@@ -163,6 +165,7 @@ private func printResponse<T: Decodable>(_ response: DataResponse<T, AFError>) {
         return
     }
     
+    #if DEBUG
     print("\n\n**********  RESPONSE   **************")
     
     let statusCode = response.response?.statusCode ?? -1
@@ -182,5 +185,6 @@ private func printResponse<T: Decodable>(_ response: DataResponse<T, AFError>) {
     }
     
     print("****************************************\n\n")
+    #endif
 }
 

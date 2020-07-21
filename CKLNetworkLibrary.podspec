@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = 'CKLNetworkLibrary'
+  s.name             = 'CKLNetwork'
   s.version          = '0.0.1'
   s.summary          = 'Wrapping library to maintain standard requests. Design patter MVVM'
  
