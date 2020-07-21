@@ -11,6 +11,7 @@ import Alamofire
 
 public protocol CKLRequestable: URLRequestConvertible {
     
+    var baseURL: String { get }
     var method: HTTPMethod { get }
     var parameters: Parameters? { get }
     var path: String { get }
@@ -31,7 +32,7 @@ extension CKLRequestable {
     /// - Returns: Url Request with parameters
     public func asURLRequest() throws -> URLRequest {
         
-        guard let url = URL(string: urlBase) else {
+        guard let url = URL(string: baseURL) else {
             throw AFError.parameterEncodingFailed(reason: .missingURL)
         }
         

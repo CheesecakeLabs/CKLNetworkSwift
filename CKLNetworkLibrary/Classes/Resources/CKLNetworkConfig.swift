@@ -17,9 +17,6 @@ var tokenAuthApp: String = ""
 /// Name to associate with the `Data` in the `Content-Disposition` HTTP header.
 var nameMediaType: String = "midia"
 
-/// Base url server
-var urlBase: String = ""
-
 /// Show request logs
 var isShowLog: Bool = false
 
@@ -38,14 +35,11 @@ public struct CKLNetworkConfig {
     /// - Parameters:
     ///   - url: url base to use to list, create and delete methods
     ///   - showLog: show log request
-    public init(
-        url: String, showLog: Bool) {
-        setup(url, showLog)
+    public init(showLog: Bool) {
+        setup(showLog)
     }
     
-    private func setup(
-        _ url: String, _ showLog: Bool) {
-        urlBase = url
+    private func setup(_ showLog: Bool) {
         isShowLog = showLog
     }
     

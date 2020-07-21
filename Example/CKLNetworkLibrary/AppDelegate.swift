@@ -18,9 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
-        var config: Config = Config()
-        
-        let ckl = CKLNetworkConfig.init(url:  config.baseURL, showLog: true)
+        let ckl = CKLNetworkConfig.init(showLog: true)
         
         //set token authentication
         ckl.setToken(token: "token provide in login")
