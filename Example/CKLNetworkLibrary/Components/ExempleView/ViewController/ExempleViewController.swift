@@ -14,7 +14,7 @@ class ExempleViewController: UIViewController {
     // MARK: - Attributes
     
     private var viewModel: ExempleViewModel?
-    private let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    private let activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
     
     // MARK: - Outlets
     

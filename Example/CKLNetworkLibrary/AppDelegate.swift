@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import CKLNetworkLibrary
+import CKLNetwork
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

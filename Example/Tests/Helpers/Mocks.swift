@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import CKLNetworkLibrary
+import CKLNetwork
 
 final class Mocks {
     

@@ -3,13 +3,11 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '12.0'
 use_frameworks!
 
-target 'CKLNetworkLibrary_Example' do
+target 'CKLNetwork_Example' do
   pod 'Alamofire', '~> 5.2.1'
-  pod 'CKLNetworkLibrary', :path => '../'
+  pod 'CKLNetwork', :path => '../'
   
-  target 'CKLNetworkLibrary_Tests' do
+  target 'CKLNetwork_Tests' do
     inherit! :search_paths
-
-    
   end
 end

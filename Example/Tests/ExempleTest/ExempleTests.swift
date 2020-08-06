@@ -7,7 +7,7 @@
 //
 
 import XCTest
-import CKLNetworkLibrary
+import CKLNetwork
 
 class ExempleTests: XCTestCase {
     
