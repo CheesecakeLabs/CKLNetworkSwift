@@ -50,7 +50,7 @@ final class ExempleViewModel: ExempleViewModelProtocol {
                 self?.test = test
                 self?.statusCode = statusCode
                 self?.reloadInfo.value = test
-            case .failure(let error, let statusCode):
+            case .failure(let error, let statusCode, _):
                 self?.statusCode = statusCode
                 self?.error.value = error
             }

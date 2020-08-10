@@ -17,7 +17,7 @@ public struct ResultEmpty: Codable {}
 
 public enum Response<T> {
     case success(T, statusCode: HTTPStatusCode? = nil)
-    case failure(error: CKLErrorCustom, statusCode: HTTPStatusCode? = nil)
+    case failure(error: CKLErrorCustom, statusCode: HTTPStatusCode? = nil, allResponse: DataResponse<T, AFError>? = nil)
 }
 
 public enum HTTPHeaderField: String {
@@ -88,7 +88,7 @@ public class CKLNetwork<R: CKLRequestable> {
                                          withName: mediaType.name(),
                                          fileName: mediaType.endPath(),
                                          mimeType: mediaType.fileExtensionPath())
-      
+                
                 for (key, value) in params {
                     multipartFormData.append("\(value)".data(using: String.Encoding.utf8, allowLossyConversion: true) ?? Data(), withName: key)
                 }
@@ -129,9 +129,11 @@ public class CKLNetwork<R: CKLRequestable> {
                 case .unprocessableEntity:
                     let errorBussiness = response.data?.CKLDecode() ?? CKLErrorBusiness()
                     return  completion(.failure(error: .business(errorBussiness), statusCode: statusCode))
+                case .unauthorized:
+                    return  completion(.failure(error:.authentication , statusCode: statusCode, allResponse: response))
                 default:
                     if (response.error as NSError?)?.code != NSURLErrorCancelled {
-                        return completion(.failure(error: .generic, statusCode: statusCode))
+                        return completion(.failure(error: .generic, statusCode: statusCode, allResponse: response))
                     }
                 }
                 return
