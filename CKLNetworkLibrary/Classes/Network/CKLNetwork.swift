@@ -82,6 +82,7 @@ public class CKLNetwork<R: CKLRequestable> {
     ///   - completion: return request and status code
     public func makeUpload<T: Decodable>( router: R, params: [String:Any], data: Data, mediaType: CKLMediaType, _ completion: @escaping ((Response<T>) -> Void)) {
         printRequest(request: router)
+        printMultipartType(mediaType: mediaType)
         AF.upload(
             multipartFormData: { multipartFormData in
                 multipartFormData.append(data,
@@ -156,6 +157,20 @@ private func printRequest(request: CKLRequestable?) {
     print("\(request?.urlRequest?.httpMethod ?? "") - URL: ", request?.urlRequest?.url ?? "")
     print("HEADER: ", request?.urlRequest?.allHTTPHeaderFields?.CKLToJson() ?? "")
     print("BODY: ", request?.parameters ?? "")
+    print("****************************************\n\n")
+    #endif
+}
+
+private func printMultipartType(mediaType: CKLMediaType?) {
+    guard isShowLog else {
+         return
+     }
+     
+    #if DEBUG
+    print("\n\n**********  REQUEST MULTIPART TYPE  **************")
+    print("NAME: ", mediaType?.name() ?? "")
+    print("ENDPATH: ", mediaType?.endPath() ?? "")
+    print("MIMETYPE: ", mediaType?.fileExtensionPath() ?? "")
     print("****************************************\n\n")
     #endif
 }
