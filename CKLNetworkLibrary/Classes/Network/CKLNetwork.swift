@@ -80,7 +80,7 @@ public class CKLNetwork<R: CKLRequestable> {
     ///   - data: data midia
     ///   - mediaType: CKLMediaType
     ///   - completion: return request and status code
-    func makeUpload<T: Decodable>( router: R, params: [String:Any], data: Data, mediaType: CKLMediaType, _ completion: @escaping ((Response<T>) -> Void)) {
+    public func makeUpload<T: Decodable>( router: R, params: [String:Any], data: Data, mediaType: CKLMediaType, _ completion: @escaping ((Response<T>) -> Void)) {
         printRequest(request: router)
         AF.upload(
             multipartFormData: { multipartFormData in
