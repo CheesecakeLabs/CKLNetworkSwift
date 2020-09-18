@@ -20,6 +20,12 @@ public enum Response<T> {
     case failure(error: CKLErrorCustom, statusCode: HTTPStatusCode? = nil, allResponse: DataResponse<T, AFError>? = nil)
 }
 
+public enum ResponseUpload<T> {
+    case success(T, statusCode: HTTPStatusCode? = nil)
+    case failure(error: CKLErrorCustom, statusCode: HTTPStatusCode? = nil, allResponse: DataResponse<T, AFError>? = nil)
+    case progress(progress: Progress)
+}
+
 public enum HTTPHeaderField: String {
     case contentType = "Content-Type"
 }
@@ -56,19 +62,19 @@ public class CKLNetwork<R: CKLRequestable> {
         AF.request(request).validate().responseDecodable(
             queue: DispatchQueue.global(qos: .userInitiated),
             decoder: decoder) { (response: DataResponse<T, AFError>) in
-                DispatchQueue.main.async {
-                    
-                    let statusCode = HTTPStatusCode(rawValue: response.response?.statusCode ?? -1) ?? HTTPStatusCode.notImplemented
-                    
-                    printResponse(response)
-                    
-                    switch response.result {
-                    case .success(let value):
-                        completion(.success(value, statusCode: statusCode))
-                    case .failure(let error):
-                        self.failure(response: response, error: error, statusCode: statusCode, completion)
-                    }
+            DispatchQueue.main.async {
+                
+                let statusCode = HTTPStatusCode(rawValue: response.response?.statusCode ?? -1) ?? HTTPStatusCode.notImplemented
+                
+                printResponse(response)
+                
+                switch response.result {
+                case .success(let value):
+                    completion(.success(value, statusCode: statusCode))
+                case .failure(let error):
+                    self.failure(response: response, error: error, statusCode: statusCode, completion)
                 }
+            }
         }
     }
     
@@ -80,9 +86,11 @@ public class CKLNetwork<R: CKLRequestable> {
     ///   - data: data midia
     ///   - mediaType: CKLMediaType
     ///   - completion: return request and status code
-    public func makeUpload<T: Decodable>( router: R, params: [String:Any], data: Data, mediaType: CKLMediaType, _ completion: @escaping ((Response<T>) -> Void)) {
+    public func makeUpload<T: Decodable>(router: R, params: [String:Any], data: Data, mediaType: CKLMediaType, _ completion: @escaping ((ResponseUpload<T>) -> Void)) {
+        
         printRequest(request: router)
         printMultipartType(mediaType: mediaType)
+        
         AF.upload(
             multipartFormData: { multipartFormData in
                 multipartFormData.append(data,
@@ -93,28 +101,30 @@ public class CKLNetwork<R: CKLRequestable> {
                 for (key, value) in params {
                     multipartFormData.append("\(value)".data(using: String.Encoding.utf8, allowLossyConversion: true) ?? Data(), withName: key)
                 }
-        },
+            },
             to: router.urlRequest?.description ?? "", usingThreshold: UInt64.init(),
             method: router.urlRequest?.method ?? .post,
             headers: router.urlRequest?.headers)
             .uploadProgress(closure: { progress in
+                completion(.progress(progress: progress))
                 if isShowLog {
                     print("Upload Progress: \(progress.fractionCompleted)")
                 }
+                
             }).responseDecodable(
                 queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.default),
                 decoder: router.getDecoder()) { ( response: DataResponse<T, AFError>) in
-                    DispatchQueue.main.async {
-                        let statusCode = HTTPStatusCode(rawValue: response.response?.statusCode ?? -1) ?? HTTPStatusCode.notImplemented
-                        printResponse(response)
-                        switch response.result {
-                        case .success(let value):
-                            completion(.success(value, statusCode: statusCode))
-                        case .failure(let error):
-                            self.failure(response: response, error: error, statusCode: statusCode, completion)
-                        }
+                DispatchQueue.main.async {
+                    let statusCode = HTTPStatusCode(rawValue: response.response?.statusCode ?? -1) ?? HTTPStatusCode.notImplemented
+                    printResponse(response)
+                    switch response.result {
+                    case .success(let value):
+                        completion(.success(value, statusCode: statusCode))
+                    case .failure(let error):
+                        self.failure(response: response, error: error, statusCode: statusCode, completion)
                     }
-        }
+                }
+            }
     }
     
     func failure<T: Decodable>(response: DataResponse<T, AFError>, error: AFError, statusCode: HTTPStatusCode, _ completion: @escaping ((Response<T>) -> Void)) {
@@ -124,20 +134,46 @@ public class CKLNetwork<R: CKLRequestable> {
         guard
             error.localizedDescription == err.localizedDescription,
             let emptyData = ResultEmpty() as? T
-            else {
-                printResponse(response)
-                switch statusCode {
-                case .unprocessableEntity:
-                    let errorBussiness = response.data?.CKLDecode() ?? CKLErrorBusiness()
-                    return  completion(.failure(error: .business(errorBussiness), statusCode: statusCode))
-                case .unauthorized:
-                    return  completion(.failure(error:.authentication , statusCode: statusCode, allResponse: response))
-                default:
-                    if (response.error as NSError?)?.code != NSURLErrorCancelled {
-                        return completion(.failure(error: .generic, statusCode: statusCode, allResponse: response))
-                    }
+        else {
+            printResponse(response)
+            switch statusCode {
+            case .unprocessableEntity:
+                let errorBussiness = response.data?.CKLDecode() ?? CKLErrorBusiness()
+                return  completion(.failure(error: .business(errorBussiness), statusCode: statusCode))
+            case .unauthorized:
+                return  completion(.failure(error:.authentication , statusCode: statusCode, allResponse: response))
+            default:
+                if (response.error as NSError?)?.code != NSURLErrorCancelled {
+                    return completion(.failure(error: .generic, statusCode: statusCode, allResponse: response))
                 }
-                return
+            }
+            return
+        }
+        
+        return completion(.success(emptyData))
+    }
+    
+    func failure<T: Decodable>(response: DataResponse<T, AFError>, error: AFError, statusCode: HTTPStatusCode, _ completion: @escaping ((ResponseUpload<T>) -> Void)) {
+        
+        let err = AFError.responseSerializationFailed(reason: .inputDataNilOrZeroLength)
+        
+        guard
+            error.localizedDescription == err.localizedDescription,
+            let emptyData = ResultEmpty() as? T
+        else {
+            printResponse(response)
+            switch statusCode {
+            case .unprocessableEntity:
+                let errorBussiness = response.data?.CKLDecode() ?? CKLErrorBusiness()
+                return  completion(.failure(error: .business(errorBussiness), statusCode: statusCode))
+            case .unauthorized:
+                return  completion(.failure(error:.authentication , statusCode: statusCode, allResponse: response))
+            default:
+                if (response.error as NSError?)?.code != NSURLErrorCancelled {
+                    return completion(.failure(error: .generic, statusCode: statusCode, allResponse: response))
+                }
+            }
+            return
         }
         
         return completion(.success(emptyData))
@@ -163,9 +199,9 @@ private func printRequest(request: CKLRequestable?) {
 
 private func printMultipartType(mediaType: CKLMediaType?) {
     guard isShowLog else {
-         return
-     }
-     
+        return
+    }
+    
     #if DEBUG
     print("\n\n**********  REQUEST MULTIPART TYPE  **************")
     print("NAME: ", mediaType?.name() ?? "")
@@ -202,4 +238,3 @@ private func printResponse<T: Decodable>(_ response: DataResponse<T, AFError>) {
     print("****************************************\n\n")
     #endif
 }
-
