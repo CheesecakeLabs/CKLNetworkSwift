@@ -23,7 +23,7 @@ public enum CKLMediaType {
         case .image:
             return name() + ".jpg"
         case .video:
-            return name() + ".mpeg"
+            return name() + ".mp4"
         case .pdf:
             return name() + ".pdf"
         }
@@ -34,7 +34,7 @@ public enum CKLMediaType {
         case .image:
             return "image/jpg"
         case .video:
-            return "video/mpeg"
+            return "video/mp4"
         case .pdf:
             return "pdf"
         }
